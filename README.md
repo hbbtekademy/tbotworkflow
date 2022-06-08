@@ -1,4 +1,4 @@
-# tbotworkflow - Telegram Bot Workflows
+# tbotworkflows - Telegram Bot Workflows
 Use **tbotworkflows** to build interactive sequential and conditional workflows for your Telegram Bot to gather user input.
 
 ## Features
