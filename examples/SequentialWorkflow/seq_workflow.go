@@ -58,35 +58,6 @@ func getSeqWorkflow() *tbotworkflow.TBotWorkflow {
 	return &wf
 }
 
-// getStep3Keyboard returns keyboard to be displayed in step3 of the workflow
-// This is usual Go Telegram Bot API code.
-func getStep3Keyboard() *tgbotapi.ReplyKeyboardMarkup {
-	kb := tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("Silver"),
-			tgbotapi.NewKeyboardButton("Gold"),
-		),
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("Cancel"),
-		),
-	)
-	return &kb
-}
-
-// getStep4Keyboard returns keyboard to be displayed in step4 of the workflow
-// This is usual Go Telegram Bot API code.
-func getStep4Keyboard() *tgbotapi.ReplyKeyboardMarkup {
-	kb := tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("Proceed"),
-		),
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("Cancel"),
-		),
-	)
-	return &kb
-}
-
 func main() {
 	// Create your telegram Bot API client
 	botAPI, err := tgbotapi.NewBotAPI(botToken)
@@ -121,4 +92,33 @@ func main() {
 
 		// Handle the user inputs as required.
 	}
+}
+
+// getStep3Keyboard returns keyboard to be displayed in step3 of the workflow
+// This is usual Go Telegram Bot API code.
+func getStep3Keyboard() *tgbotapi.ReplyKeyboardMarkup {
+	kb := tgbotapi.NewReplyKeyboard(
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("Silver"),
+			tgbotapi.NewKeyboardButton("Gold"),
+		),
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("Cancel"),
+		),
+	)
+	return &kb
+}
+
+// getStep4Keyboard returns keyboard to be displayed in step4 of the workflow
+// This is usual Go Telegram Bot API code.
+func getStep4Keyboard() *tgbotapi.ReplyKeyboardMarkup {
+	kb := tgbotapi.NewReplyKeyboard(
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("Proceed"),
+		),
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("Cancel"),
+		),
+	)
+	return &kb
 }
