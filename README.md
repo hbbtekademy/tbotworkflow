@@ -10,8 +10,8 @@ Use **tbotworkflow** to build interactive sequential and conditional workflows f
 - Currently supports only normal Reply Markup Keyboards. Inline keyboards not supported.
 
 # Examples
-## [Sequential Workflow](https://github.com/hbbtekademy/tbotworkflow/tree/main/examples/SequentialWorkflow)
+### [Sequential Workflow](https://github.com/hbbtekademy/tbotworkflow/tree/main/examples/SequentialWorkflow)
 
-## Conditional Workflow
+### [Conditional Workflow](https://github.com/hbbtekademy/tbotworkflow/tree/main/examples/ConditionalWorkflow)
 
-## Optional Parameters
+### Optional Parameters
