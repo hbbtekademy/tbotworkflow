@@ -1,4 +1,4 @@
-module github.com/hbbtekademy/tbotworkflow/v1
+module github.com/hbbtekademy/tbotworkflow
 
 go 1.16
 
