@@ -168,4 +168,48 @@ step5 := tbotworkflow.NewWorkflowStep("Step5", "", "Thanks Proceeding with regis
   </tr>
 </table>
 
-## Output after Step 5 (Workflow end)
+## Chaining the steps together
+```go
+// Sequential Workflow. Chaining the steps.
+step1.Next = &step2
+step2.Next = &step3
+step3.Next = &step4
+step4.Next = &step5
+```
+
+## Creating the Workflow and Workflow Controller
+```go
+// Create a new workflow for command "/subscribe" with Step1 as at the root/starting step.
+wf := tbotworkflow.NewWorkflow("WF1", "subscribe", &step1)
+
+// Cancel button config for the entire workflow.
+cancelBtnConfig := tbotworkflow.NewCancelButtonConfig("Cancel", "Canceling registeration.")
+wf.CancelButtonConfig = cancelBtnConfig
+
+// Create new Workflow Controller
+wfc := tbotworkflow.NewWorkflowController("WFC")
+// Add the Workflow to the controller. Any number of workflows can be added to a Workflow Controller.
+wfc.AddWorkflow(&wf)
+```
+
+## Executing the Workflow and processing the user inputs
+```go
+// Process the Telegram Bot Updates
+for update := range updates {
+	// Do any pre-processing before invoking the workflows here.
+
+	// Execute the workflow
+	userInputs, done := wfc.Execute(update.Message, botAPI.Send)
+	if !done {
+		continue
+	}
+
+	log.Printf("UserID: %d, Command: %s, Data: %v", userInputs.UID, userInputs.Command, userInputs.Data)
+
+	// Handle the user inputs as required.
+}
+```
+
+<pre>
+2022/06/09 20:28:09 UserID: 5104523246, Command: SUBSCRIBE, Data: map[Confirmation:Proceed Email:Hbb@hbb.com Name:HBB HBB Plan:Gold]
+</pre>
