@@ -96,7 +96,76 @@ func getStep3Keyboard() *tgbotapi.ReplyKeyboardMarkup {
 </table>
 
 ## Step 4
+Request user confirmation using a custom keyboard and custom Reply Text Function
+
+<table>
+  <tr>
+    <td> Telegram App </td> <td> Code Snippet </td>
+  </tr>
+  <tr>
+    <td>
+      
+![Step 4](https://raw.githubusercontent.com/hbbtekademy/images-repo/main/tbotworkflow/examples/SequentialWorkflow/SeqStep4.jpg)
+    </td>
+    <td>
+      <pre>
+      
+```go
+// Step4 keyboard.
+step4KB := getStep4Keyboard()
+// Step4 with custom keyboard.
+step4 := tbotworkflow.NewWorkflowStep("Step4", "Confirmation", "", step4KB)
+// Custom reply text func
+step4.ReplyTextFunc = func(ui *tbotworkflow.UserInputs) string {
+	return fmt.Sprintf(`Please confirm your details:
+	Name: %s
+	Email: %s
+	Subscription: %s`, ui.Data["Name"], ui.Data["Email"], ui.Data["Plan"])
+}
+
+// getStep4Keyboard returns keyboard to be displayed in step4 of the workflow
+// This is usual Go Telegram Bot API code.
+func getStep4Keyboard() *tgbotapi.ReplyKeyboardMarkup {
+	kb := tgbotapi.NewReplyKeyboard(
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("Proceed"),
+		),
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("Cancel"),
+		),
+	)
+	return &kb
+}
+```
+
+</pre>
+    </td>
+  </tr>
+</table>
 
 ## Step 5
+Complete the workflow and return with the last step
+
+<table>
+  <tr>
+    <td> Telegram App </td> <td> Code Snippet </td>
+  </tr>
+  <tr>
+    <td>
+      
+![Step 5](https://raw.githubusercontent.com/hbbtekademy/images-repo/main/tbotworkflow/examples/SequentialWorkflow/SeqStep5.jpg)
+    </td>
+    <td>
+      <pre>
+      
+```go
+// Step5 (Last) of the workflow
+step5 := tbotworkflow.NewWorkflowStep("Step5", "", "Thanks Proceeding with registration", nil)
+```
+
+</pre>
+    </td>
+  </tr>
+</table>
 
 ## Output after Step 5 (Workflow end)
