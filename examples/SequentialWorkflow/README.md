@@ -211,5 +211,5 @@ for update := range updates {
 ```
 
 <pre>
-2022/06/09 20:28:09 UserID: 5104523246, Command: SUBSCRIBE, Data: map[Confirmation:Proceed Email:Hbb@hbb.com Name:HBB HBB Plan:Gold]
+2022/06/09 20:28:09 UserID: xxxxxxxx, Command: SUBSCRIBE, Data: map[Confirmation:Proceed Email:Hbb@hbb.com Name:HBB HBB Plan:Gold]
 </pre>
