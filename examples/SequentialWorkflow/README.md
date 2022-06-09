@@ -2,7 +2,29 @@
 
 ## Step 1
 User initiates a Telegram Bot Command. *e.g. /subscribe*
-![Step 1]([https://raw.githubusercontent.com/yanzay/tbot/master/logo.png](https://raw.githubusercontent.com/hbbtekademy/images-repo/main/tbotworkflow/examples/SequentialWorkflow/SeqStep1.jpg)
+
+<table>
+  <tr>
+    <td> Telegram App </td> <td> Code Snippet </td>
+  </tr>
+  <tr>
+    <td>
+      
+![Step 1](https://raw.githubusercontent.com/hbbtekademy/images-repo/main/tbotworkflow/examples/SequentialWorkflow/SeqStep1.jpg)
+    </td>
+    <td>
+      <pre>
+      
+```go
+// Step1 of the workflow. 
+// Keyboard is nil so standard text keyboard will be displayed.
+step1 := tbotworkflow.NewWorkflowStep("Step1", "Name", "Please enter your Name", nil)
+```
+
+</pre>
+    </td>
+  </tr>
+</table>
 
 ## Step 2
 
