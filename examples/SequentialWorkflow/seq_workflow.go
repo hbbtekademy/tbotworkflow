@@ -5,7 +5,7 @@ import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	tbotworkflow "github.com/hbbtekademy/tbotworkflow/v1"
+	tbotworkflow "github.com/hbbtekademy/tbotworkflow"
 )
 
 var (
