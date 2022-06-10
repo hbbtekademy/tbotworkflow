@@ -253,11 +253,7 @@ func (w *TBotWorkflowController) Execute(msg *tgbotapi.Message,
 	if msg.IsCommand() {
 		cmd := strings.ToUpper(msg.Command())
 		if wf, found = w.workflows[cmd]; !found {
-			if w.WorkflowNotFoundReplyTextFunc != nil {
-				reply.Text = w.WorkflowNotFoundReplyTextFunc(msg)
-			} else {
-				reply.Text = fmt.Sprintf(defaultWFNotFoundReplyText, cmd)
-			}
+			reply.Text = w.getWFNotFoundReplyText(msg, cmd)
 			if _, err := sendFunc(reply); err != nil {
 				w.Logger.Printf("Failed sending message. Error: %v", err)
 			}
@@ -284,11 +280,7 @@ func (w *TBotWorkflowController) Execute(msg *tgbotapi.Message,
 	}
 
 	if !found {
-		if w.WorkflowNotFoundReplyTextFunc != nil {
-			reply.Text = w.WorkflowNotFoundReplyTextFunc(msg)
-		} else {
-			reply.Text = fmt.Sprintf(defaultWFNotFoundReplyText, msg.Text)
-		}
+		reply.Text = w.getWFNotFoundReplyText(msg, msg.Text)
 		reply.ReplyMarkup = tgbotapi.ReplyKeyboardRemove{RemoveKeyboard: true, Selective: true}
 
 		if _, err := sendFunc(reply); err != nil {
@@ -296,21 +288,11 @@ func (w *TBotWorkflowController) Execute(msg *tgbotapi.Message,
 		}
 		return nil, false
 	}
-	cancelBtnExists := false
-	cancelBtnText := ""
-	cancelBtnReply := ""
-	if userWfTracker.CurrentStep.CancelButtonConfig != nil {
-		cancelBtnExists = userWfTracker.CurrentStep.CancelButtonConfig.cancelButtonExists
-		cancelBtnText = userWfTracker.CurrentStep.CancelButtonConfig.cancelButtonText
-		cancelBtnReply = userWfTracker.CurrentStep.CancelButtonConfig.cancelButtonReply
-	} else if userWfTracker.cancelButtonConfig != nil {
-		cancelBtnExists = userWfTracker.cancelButtonConfig.cancelButtonExists
-		cancelBtnText = userWfTracker.cancelButtonConfig.cancelButtonText
-		cancelBtnReply = userWfTracker.cancelButtonConfig.cancelButtonReply
-	}
-	if cancelBtnExists && msgText == cancelBtnText {
+
+	cancelBtnConfig := w.getCancelBtnConfig(userWfTracker)
+	if cancelBtnConfig.cancelButtonExists && msgText == cancelBtnConfig.cancelButtonText {
 		w.userWFTracker.Delete(userId)
-		reply.Text = cancelBtnReply
+		reply.Text = cancelBtnConfig.cancelButtonReply
 		reply.ReplyMarkup = tgbotapi.ReplyKeyboardRemove{RemoveKeyboard: true, Selective: true}
 
 		if _, err := sendFunc(reply); err != nil {
@@ -320,16 +302,7 @@ func (w *TBotWorkflowController) Execute(msg *tgbotapi.Message,
 	}
 
 	if !msg.IsCommand() {
-		var ok bool
-		var invalidReplyText string
-		if userWfTracker.CurrentStep.ValidateInputFunc != nil {
-			invalidReplyText, ok = userWfTracker.CurrentStep.ValidateInputFunc(msg, userWfTracker.CurrentStep.KB)
-		} else if w.ValidateInputFunc != nil {
-			invalidReplyText, ok = w.ValidateInputFunc(msg, userWfTracker.CurrentStep.KB)
-		} else {
-			invalidReplyText, ok = w.validateInput(msg, userWfTracker.CurrentStep.KB)
-		}
-
+		invalidReplyText, ok := w.validateInput(msg, userWfTracker)
 		if ok {
 			userWfTracker.userInputs.Data[userWfTracker.CurrentStep.Key] = msg.Text
 		} else {
@@ -390,9 +363,9 @@ func (w *TBotWorkflowController) Execute(msg *tgbotapi.Message,
 	return nil, false
 }
 
-// validateInput is the default input validation method.
+// defaultValidateInput is the default input validation method.
 // This method will compare the user input with the Keyboard Button Text.
-func (w *TBotWorkflowController) validateInput(msg *tgbotapi.Message, kb *tgbotapi.ReplyKeyboardMarkup) (string, bool) {
+func (w *TBotWorkflowController) defaultValidateInput(msg *tgbotapi.Message, kb *tgbotapi.ReplyKeyboardMarkup) (string, bool) {
 	if kb == nil {
 		return "", true
 	}
@@ -420,4 +393,40 @@ func (w *TBotWorkflowController) validateInput(msg *tgbotapi.Message, kb *tgbota
 
 	w.Logger.Printf("User input: %s validated: %v", msg.Text, validated)
 	return replyText, validated
+}
+
+func (w *TBotWorkflowController) getWFNotFoundReplyText(msg *tgbotapi.Message, text string) string {
+	replyText := ""
+	if w.WorkflowNotFoundReplyTextFunc != nil {
+		replyText = w.WorkflowNotFoundReplyTextFunc(msg)
+	} else {
+		replyText = fmt.Sprintf(defaultWFNotFoundReplyText, text)
+	}
+	return replyText
+}
+
+func (w *TBotWorkflowController) getCancelBtnConfig(userWfTracker *workflowTracker) *CancelButtonConfig {
+	if userWfTracker.CurrentStep.CancelButtonConfig != nil {
+		return userWfTracker.CurrentStep.CancelButtonConfig
+	} else if userWfTracker.cancelButtonConfig != nil {
+		return userWfTracker.cancelButtonConfig
+	}
+	return &CancelButtonConfig{
+		cancelButtonExists: false,
+		cancelButtonText:   "",
+		cancelButtonReply:  "",
+	}
+}
+
+func (w *TBotWorkflowController) validateInput(msg *tgbotapi.Message, userWfTracker *workflowTracker) (string, bool) {
+	invalidReplyText := ""
+	ok := true
+	if userWfTracker.CurrentStep.ValidateInputFunc != nil {
+		invalidReplyText, ok = userWfTracker.CurrentStep.ValidateInputFunc(msg, userWfTracker.CurrentStep.KB)
+	} else if w.ValidateInputFunc != nil {
+		invalidReplyText, ok = w.ValidateInputFunc(msg, userWfTracker.CurrentStep.KB)
+	} else {
+		invalidReplyText, ok = w.defaultValidateInput(msg, userWfTracker.CurrentStep.KB)
+	}
+	return invalidReplyText, ok
 }
