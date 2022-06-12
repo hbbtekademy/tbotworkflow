@@ -35,6 +35,9 @@ step1.CancelButtonConfig = cancelBtnConfig
 ```
 
 ## ConditionFunc & ConditionalNext
+Refer to the Conditional Workflow example.
+
+[Contitional Workflow](https://github.com/hbbtekademy/tbotworkflow/tree/main/examples/ConditionalWorkflow)
 
 # TBotWorkflow - Workflow Optional Paramters
 ## CancelButtonConfig
