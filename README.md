@@ -19,4 +19,4 @@ go get -u github.com/hbbtekademy/tbotworkflow
 
 ### [Conditional Workflow](https://github.com/hbbtekademy/tbotworkflow/tree/main/examples/ConditionalWorkflow)
 
-### Optional Parameters
+### [Optional Parameters](https://github.com/hbbtekademy/tbotworkflow/tree/main/examples/OptionalParameters)
