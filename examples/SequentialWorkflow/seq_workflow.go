@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/mail"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	tbotworkflow "github.com/hbbtekademy/tbotworkflow"
@@ -21,6 +22,17 @@ func getSeqWorkflow() *tbotworkflow.TBotWorkflow {
 
 	// Step2 of the workflow. Keyboard is nil so standard text keyboard will be displayed.
 	step2 := tbotworkflow.NewWorkflowStep("Step2", "Email", "Please enter your Email", nil)
+	step2.ValidateInputFunc = func(msg *tgbotapi.Message, kb *tgbotapi.ReplyKeyboardMarkup) (string, bool) {
+		errMsg := ""
+		ok := true
+
+		_, err := mail.ParseAddress(msg.Text)
+		if err != nil {
+			errMsg = fmt.Sprintf("Invalid email: %s. Please enter a valid email address!", msg.Text)
+			ok = false
+		}
+		return errMsg, ok
+	}
 
 	// Step3 Keyboard.
 	step3KB := getStep3Keyboard()
