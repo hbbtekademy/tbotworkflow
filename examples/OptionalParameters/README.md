@@ -15,10 +15,25 @@ step4.ReplyTextFunc = func(ui *tbotworkflow.UserInputs) string {
 ```
 
 ## ValidateInputFunc
-Function for custom validation of the user input.
+Function for custom validation of the user input. Function should return a string and bool value.
+
+If bool value is false, the contents of the string (error message) is displayed to the user and the same step will repeat again.
 
 Example
 ```go
+// Step2 of the workflow. Keyboard is nil so standard text keyboard will be displayed.
+step2 := tbotworkflow.NewWorkflowStep("Step2", "Email", "Please enter your Email", nil)
+step2.ValidateInputFunc = func(msg *tgbotapi.Message, kb *tgbotapi.ReplyKeyboardMarkup) (string, bool) {
+	errMsg := ""
+	ok := true
+
+	_, err := mail.ParseAddress(msg.Text)
+	if err != nil {
+		errMsg = fmt.Sprintf("Invalid email: %s. Please enter a valid email address!", msg.Text)
+		ok = false
+	}
+	return errMsg, ok
+}
 ```
 
 ## CancelButtonConfig
@@ -54,7 +69,30 @@ wf.CancelButtonConfig = cancelBtnConfig
 
 # TBotWorkflowController - Workflow Controller Optional Parameters
 ## Logger
+Go Standard Library logger. Logger is disabled by default. It can be enabled/disabled or completely overridden by user defined Std Lib logger
+
+```go
+wfc := tbotworkflow.NewWorkflowController("Workflows")
+// Enable logging to stdout
+wfc.EnableLogging(os.Stdout)
+
+// Disable logging
+wfc.DisableLogging()
+
+// Override logger
+wfc.SetLogger(log.New(os.Stdout, "", log.Lshortfile|log.LstdFlags))
+```
 
 ## WorkflowNotFoundReplyTextFunc
+Error message to be displayed to the user if a workflow is not found for a given Telegram Bot Command.
+```go
+// Create new Workflow Controller
+wfc := tbotworkflow.NewWorkflowController("WFC")
+wfc.WorkflowNotFoundReplyTextFunc = func(msg *tgbotapi.Message) string {
+	return fmt.Sprintf("Incorrect message: %s. Please select a valid Bot Command!", msg.Text)
+}
+```
 
 ## ValidateInputFunc
+Define this function if the same Input Validation should be applied to all the steps of all the registered workflows.
+
