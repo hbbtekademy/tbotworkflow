@@ -1,4 +1,5 @@
-# tbotworkflow - Telegram Bot Workflows
+# tbotworkflow - Telegram Bot Workflows [![GoDoc](https://pkg.go.dev/badge/github.com/hbbtekademy/tbotworkflow?status.svg)](https://pkg.go.dev/github.com/hbbtekademy/tbotworkflow) [![Go Report Card](https://goreportcard.com/badge/github.com/hbbtekademy/tbotworkflow)](https://goreportcard.com/report/github.com/hbbtekademy/tbotworkflow)
+
 Use **tbotworkflow** to build interactive sequential and conditional workflows for your Telegram Bot to gather user input.
 
 ## Features
